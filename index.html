@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>瞎吃魚・海鮮專賣｜新鮮海鮮・宅配到府</title>
+<meta name="description" content="瞎吃魚・海鮮專賣：自家養殖活體白蝦、泰國蝦、冷凍海鮮與加工品。挑選品項、複製清單，到官方 LINE 下單。">
+<link rel="icon" href="logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar__in">
+    <a class="brand" href="#top" aria-label="瞎吃魚・海鮮專賣 回到頂端">
+      <img src="logo-mark.png" alt="" width="36" height="36">
+      <span>瞎吃魚<small>海鮮專賣</small></span>
+    </a>
+    <nav class="nav" aria-label="主選單">
+      <a href="#products">商品</a>
+      <a href="#trip">出車</a>
+      <a href="#how">下單流程</a>
+      <a href="#shipping">物流運費</a>
+      <a href="#about">關於我們</a>
+      <a href="#faq">常見問題</a>
+    </nav>
+    <a class="btn btn--primary btn--sm" id="lineTop" href="#" target="_blank" rel="noopener">官方 LINE</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero__in">
+      <div class="hero__text">
+        <p class="eyebrow">新鮮海鮮・宅配到府</p>
+        <h1>瞎買瞎煮<br>都好吃</h1>
+        <p class="lead">自家養殖活體白蝦、泰國蝦，加上冷凍海鮮與加工品。挑好品項、複製清單，到官方 LINE 告訴我們就能下單。</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="#products">挑選商品</a>
+          <a class="btn btn--ghost lineLink" href="#" target="_blank" rel="noopener">前往官方 LINE</a>
+        </div>
+      </div>
+      <img class="hero__img" src="logo-full.jpg" alt="瞎吃魚・海鮮專賣 標誌：蝦、魚與海浪" width="360" height="380">
+    </div>
+  </section>
+
+  <section class="band" id="trip" aria-labelledby="tripTitle">
+    <div class="wrap">
+      <div class="trip">
+        <div>
+          <h2 id="tripTitle" class="h2 h2--sm">本週出車</h2>
+          <p class="trip__big" id="tripSchedule">載入中…</p>
+          <p class="trip__place" id="tripPlace"></p>
+        </div>
+        <p class="trip__note" id="tripNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="products" aria-labelledby="prodTitle">
+    <div class="wrap">
+      <h2 class="h2" id="prodTitle">商品</h2>
+      <p class="sub">點「+」加入清單，或直接複製單品名稱與售價。實際庫存與運費，請到 LINE 跟我們確認。</p>
+      <div class="tabs" role="tablist" aria-label="商品分類" id="tabs"></div>
+      <div id="catalog" aria-live="polite"><p class="empty">商品載入中…</p></div>
+    </div>
+  </section>
+
+  <section class="section section--soft" id="how" aria-labelledby="howTitle">
+    <div class="wrap">
+      <h2 class="h2" id="howTitle">下單流程</h2>
+      <ol class="steps">
+        <li><b>1</b><h3>選品項</h3><p>在上方商品加入清單。</p></li>
+        <li><b>2</b><h3>複製清單</h3><p>按「複製並前往 LINE」。</p></li>
+        <li><b>3</b><h3>貼到 LINE</h3><p>貼給官方 LINE，我們確認庫存與運費。</p></li>
+        <li><b>4</b><h3>匯款或賣貨便</h3><p>依指定方式付款。</p></li>
+        <li><b>5</b><h3>出貨</h3><p>我們出貨並通知你。</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="shipping" aria-labelledby="shipTitle">
+    <div class="wrap">
+      <h2 class="h2" id="shipTitle">物流與運費</h2>
+      <p class="sub">所有物流都在 LINE 談定，網站不自動計算運費。</p>
+      <div class="cards" id="shipCards"></div>
+    </div>
+  </section>
+
+  <section class="section section--soft" id="about" aria-labelledby="aboutTitle">
+    <div class="wrap narrow">
+      <h2 class="h2" id="aboutTitle">關於我們</h2>
+      <p class="tag">以下為初稿，待店主確認</p>
+      <div id="aboutText" class="prose">
+        <p>瞎吃魚・海鮮專賣沒有實體店面，主要提供自家養殖的活體白蝦與泰國蝦，也有冷凍海鮮與烏魚子、蒲燒鰻等加工品。</p>
+        <p>我們的想法很簡單：「瞎買瞎煮，都好吃」。食材挑得安心，煮起來不用複雜。</p>
+        <p>每週六、日我們在朴子出車現場販售，其他時間可以透過官方 LINE 訂購。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faqTitle">
+    <div class="wrap narrow">
+      <h2 class="h2" id="faqTitle">常見問題</h2>
+      <details><summary>要怎麼訂購？</summary><p>在網站挑好品項，按「複製並前往 LINE」，把清單貼給官方 LINE，我們會確認庫存與運費。網站本身不收款，也不能直接結帳。</p></details>
+      <details><summary>活體白蝦、泰國蝦可以線上買嗎？</summary><p>不行。活體商品僅限出車現場購買，不提供線上購買與物流配送。朴子市、太保市、東石滿 5 斤可由店主親自外送，請先在 LINE 洽詢。</p></details>
+      <details><summary>出車在哪裡、幾點？</summary><p id="faqTrip">每週六、日早上 7:30 開始，售完為止，地點在朴子市瓦季滷味門口。</p></details>
+      <details><summary>冷凍品怎麼寄？</summary><p>少量可用 7-11 賣貨便冷凍店到店；量大可用黑貓冷凍宅急便。詳見上方「物流與運費」。</p></details>
+      <details><summary>價格會變嗎？</summary><p>網站價格為目前售價，活體等時價商品以現場公告為準。實際金額以 LINE 確認為準。</p></details>
+    </div>
+  </section>
+
+  <section class="section section--soft" id="contact" aria-labelledby="contactTitle">
+    <div class="wrap narrow contact">
+      <div>
+        <h2 class="h2" id="contactTitle">聯絡我們</h2>
+        <p class="sub">下單與詢問都請走官方 LINE。</p>
+        <a class="btn btn--primary lineLink" href="#" target="_blank" rel="noopener">加入官方 LINE <span id="lineId"></span></a>
+      </div>
+      <figure><img src="qr-line.png" alt="官方 LINE QR Code" width="140" height="140"><figcaption>LINE</figcaption></figure>
+      <figure><img src="qr-ig.jpg" alt="Instagram QR Code" width="140" height="140"><figcaption>Instagram</figcaption></figure>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">© 瞎吃魚・海鮮專賣　新鮮海鮮・宅配到府</div>
+</footer>
+
+<!-- 選購清單 -->
+<button class="cartfab" id="cartFab" aria-haspopup="dialog" aria-controls="drawer">
+  我的清單<span class="cartfab__n" id="cartN">0</span>
+</button>
+
+<div class="overlay" id="overlay" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
+  <div class="drawer__head">
+    <h2 id="drawerTitle">我的清單</h2>
+    <button class="iconbtn" id="drawerClose" aria-label="關閉">✕</button>
+  </div>
+  <div class="drawer__body" id="cartList"></div>
+  <div class="drawer__foot">
+    <div class="total"><span>合計</span><b id="cartTotal">$0</b></div>
+    <p class="hint">不含運費，實際金額以 LINE 確認為準。</p>
+    <button class="btn btn--primary btn--block" id="copyGo">複製並前往 LINE</button>
+    <div id="manualBox" hidden>
+      <p class="hint">無法自動複製，請長按選取下方文字後複製，再到 LINE 貼上。</p>
+      <textarea id="manualText" rows="6" readonly></textarea>
+    </div>
+    <button class="linkbtn" id="clearCart">清空清單</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
