@@ -188,6 +188,8 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var token = null, user = '', view = 'trips';
+  var CACHE = {};
+  function swr(key, promise, draw, onErr) { if (CACHE[key]) draw(CACHE[key]); promise.then(function (r) { CACHE[key] = r; draw(r); }, function (e) { if (!CACHE[key]) onErr(e); }); }
   var state = { products: [], pFilter: { cat: '全部', q: '' }, month: monthOf(new Date()), names: [] };
 
   /* ---------- 工具 ---------- */
@@ -205,7 +207,7 @@
   function call(fn) {
     var args = [].slice.call(arguments, 1);
     return new Promise(function (resolve, reject) {
-      var run = google.script.run.withSuccessHandler(resolve).withFailureHandler(function (e) {
+      var run = google.script.run.withSuccessHandler(function (r) { if (/^api_(save|delete|set|stockMove|import)/.test(fn)) CACHE = {}; resolve(r); }).withFailureHandler(function (e) {
         var m = (e && e.message) || '連線失敗';
         if (m.indexOf('未登入') >= 0) { logout(true); }
         reject(new Error(m.replace(/^Error:\s*/, '')));
@@ -304,7 +306,7 @@
       '<span class="grow"></span><button class="btn" id="newTrip">+ 新增場次</button></div><div id="tlist" class="muted">載入中…</div>';
     $('newTrip').onclick = function () { tripForm(null); };
     $('mon').onchange = function () { state.month = this.value; tripsList(); };
-    authed('api_listTrips', state.month).then(function (r) {
+    swr('trips:' + state.month, authed('api_listTrips', state.month), function (r) {
       var h = '<div class="card"><div class="kpis"><div><small>本月進帳</small><b class="num">' + money(r.sum.income) + '</b></div>' +
         '<div><small>成本</small><b class="num cost">' + money(r.sum.cost) + '</b></div><div><small>淨額</small><b class="num">' + money(r.sum.net) + '</b></div></div></div>';
       if (!r.trips.length) h += '<p class="muted">這個月還沒有出車紀錄。</p>';
@@ -317,7 +319,7 @@
       });
       $('tlist').className = ''; $('tlist').innerHTML = h;
       [].forEach.call(document.querySelectorAll('.item[data-id]'), function (b) { b.onclick = function () { tripForm(b.getAttribute('data-id')); }; });
-    }).catch(function (e) { $('tlist').textContent = e.message; });
+    }, function (e) { $('tlist').textContent = e.message; });
   }
 
   var DENOMS = [1000, 500, 100, 50, 10, 5, 1];
@@ -477,9 +479,9 @@
 
   /* =====================  商品管理  ===================== */
   function productsView() {
-    $('view').innerHTML = '<p class="muted">載入中…</p>';
-    authed('api_listProducts').then(function (r) { state.products = r.products; state.names = r.products.map(function (x) { return x['品名']; }); renderProducts(); })
-      .catch(function (e) { $('view').innerHTML = '<p class="neg">' + esc(e.message) + '</p>'; });
+    if (state.products && state.products.length) renderProducts(); else $('view').innerHTML = '<p class="muted">載入中…</p>';
+    authed('api_listProducts').then(function (r) { state.products = r.products; state.names = r.products.map(function (x) { return x['品名']; }); if (view === 'products') renderProducts(); })
+      .catch(function (e) { if (!(state.products && state.products.length)) $('view').innerHTML = '<p class="neg">' + esc(e.message) + '</p>'; });
   }
 
   function renderProducts() {
@@ -586,7 +588,7 @@
     $('newOrder').onclick = function () { orderForm(null); };
     $('oq').onchange = function () { oF.q = this.value.trim(); ordersList(); };
     $('om').onchange = function () { oF.month = this.value; ordersList(); };
-    authed('api_listOrders', oF).then(function (r) {
+    swr('orders:' + JSON.stringify(oF), authed('api_listOrders', oF), function (r) {
       var h = r.orders.length ? '' : '<p class="muted">沒有符合的訂單。</p>';
       r.orders.forEach(function (o) {
         h += '<button class="item" data-id="' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.customerName || '（未指定客戶）') + ' ' + stPill(o.status) + '</div>' +
@@ -594,14 +596,18 @@
       });
       $('olist').className = ''; $('olist').innerHTML = h;
       [].forEach.call($('olist').querySelectorAll('.item'), function (b) { b.onclick = function () { orderForm(b.getAttribute('data-id')); }; });
-    }).catch(function (e) { fail($('olist'), e); });
+    }, function (e) { fail($('olist'), e); });
   }
 
   var O = null;
   function orderForm(id) {
     $('view').innerHTML = '<p class="muted">載入中…</p>';
-    loadRefs().then(function () { return id ? authed('api_getOrder', id).then(function (r) { if (!r.ok) throw new Error(r.error); return r.order; }) : { id: '', date: todayStr(), customerId: '', logistics: '賣貨便', pay: '轉帳', status: '待確認', shipping: 0, note: '', items: [] }; })
-      .then(function (o) { O = o; renderOrderForm(); })
+    authed('api_orderBoot', id || '').then(function (r) {
+      if (!r.ok) throw new Error(r.error);
+      state.products = r.products; state.names = r.products.map(function (x) { return x['品名']; }); state.customers = r.customers;
+      O = r.order || { id: '', date: todayStr(), customerId: '', logistics: '賣貨便', pay: '轉帳', status: '待確認', shipping: 0, note: '', items: [] };
+      renderOrderForm();
+    })
       .catch(function (e) { $('view').innerHTML = '<p class="neg">' + esc(e.message) + '</p><button class="btn ghost" id="bk">返回</button>'; $('bk').onclick = ordersList; });
   }
 
@@ -671,7 +677,8 @@
     $('view').innerHTML = '<div class="row wrap" style="margin-bottom:12px"><input id="cq" placeholder="搜尋姓名、電話、LINE 名稱" value="' + esc(cQ) + '" class="grow" style="width:auto"><button class="btn" id="newC">+ 新增客戶</button></div><div id="clist" class="muted">載入中…</div>';
     $('newC').onclick = function () { customerModal(null, customersView); };
     $('cq').oninput = function () { cQ = this.value; drawC(); };
-    authed('api_listCustomers').then(function (r) { state.customers = r.customers; drawC(); }).catch(function (e) { fail($('clist'), e); });
+    if (state.customers) drawC();
+    authed('api_listCustomers').then(function (r) { state.customers = r.customers; drawC(); }).catch(function (e) { if (!state.customers) fail($('clist'), e); });
   }
   function drawC() {
     var l = state.customers.filter(function (c) { return !cQ || (c['姓名'] + c['電話'] + c['LINE 名稱']).indexOf(cQ) >= 0; });
